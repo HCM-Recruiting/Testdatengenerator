@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\CSharp\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj": {}
+    "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj": {}
   },
   "projects": {
-    "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\CSharp\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj": {
+    "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\CSharp\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj",
+        "projectUniqueName": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj",
         "projectName": "ApplicationLib",
-        "projectPath": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\CSharp\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj",
+        "projectPath": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\HCM-Backend\\ApplicationLib\\ApplicationLib.csproj",
         "packagesPath": "C:\\Users\\Emilio\\.nuget\\packages\\",
-        "outputPath": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\CSharp\\HCM-Backend\\ApplicationLib\\obj\\",
+        "outputPath": "C:\\Schule\\Diplomarbeit-HCM\\Testdatengenerator\\Backend\\HCM-Backend\\ApplicationLib\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Emilio\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HCMBackend", "HCM-Backend\H
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationLib", "ApplicationLib\ApplicationLib.csproj", "{4063FA4C-1C7D-4967-B8E3-76F2C322F9EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCall", "TestCall\TestCall.csproj", "{ACA13F37-A176-443A-B77B-74C7A6DC6C20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4063FA4C-1C7D-4967-B8E3-76F2C322F9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4063FA4C-1C7D-4967-B8E3-76F2C322F9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4063FA4C-1C7D-4967-B8E3-76F2C322F9EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA13F37-A176-443A-B77B-74C7A6DC6C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA13F37-A176-443A-B77B-74C7A6DC6C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA13F37-A176-443A-B77B-74C7A6DC6C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA13F37-A176-443A-B77B-74C7A6DC6C20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

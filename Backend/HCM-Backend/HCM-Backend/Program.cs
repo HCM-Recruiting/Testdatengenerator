@@ -6,6 +6,7 @@
 using HCMBackend.Logging;
 using GrueneisR.RestClientGenerator;
 using Microsoft.OpenApi.Models;
+using HCMBackend.Services;
 
 string corsKey = "_myAllowSpecificOrigins";
 string swaggerVersion = "v1";
@@ -35,6 +36,7 @@ builder.Services
 	  //.EnableLogging()
   );
 builder.Services.AddLogging(x => x.AddCustomFormatter());
+builder.Services.AddScoped<ApplicationService>();
 #endregion
 
 var app = builder.Build();
