@@ -1,0 +1,17 @@
+<div class="propField">
+@for (item of getObjectKeys(propData); track $index) {
+    <div class="singlePropField">
+        <select #selectedProp (click)="savePrevious(selectedProp.value)" (change)="fieldChanged(selectedProp.value, chance.valueAsNumber)" [value]="item">
+            <option [value]="item">{{item}}</option>
+            <option *ngFor="let propName of availableProperties" [value]="propName">{{propName}}</option>
+        </select>
+        <input #chance (click)="updateSavedProperties(selectedProp.value, chance.valueAsNumber)" min="1" max="100" type="number" [value]="propData[item]">
+        <button (click)="removeProperty(item)">Remove Field</button>
+    </div>
+
+}
+    
+</div>
+@if (availableProperties.length > 0) {
+    <button style="font-size: xx-large;" (click)="addProperty()">Add Field +</button>
+}

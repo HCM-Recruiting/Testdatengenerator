@@ -1,0 +1,13 @@
+<div class="buttonField">
+    <div class="buttonContainer">
+    @for (className of AllClasses; track $index) {
+        <button [value]="className" (click)="classClicked(className)">{{className}}</button>
+    }         
+</div>
+</div>
+
+<div>
+    <app-property-field (saveNewPropData)="updatePropData($event)" [propData]="propData" [availableProperties]="availableProperties"></app-property-field>
+</div>
+
+<button (click)="saveChanges()">Generate Test-Data</button>
