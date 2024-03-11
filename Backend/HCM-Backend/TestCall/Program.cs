@@ -9,7 +9,7 @@ class Program
     static void Main()
     {
         var authService = new AuthService();
-        authService.GetApplications(10);
+        authService.PostApplicationXML();
         //var applicationService = new ApplicationService();
 
         //var dic = applicationService.GetClassProperties();

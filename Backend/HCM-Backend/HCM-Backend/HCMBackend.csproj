@@ -22,4 +22,10 @@
     <ProjectReference Include="..\ApplicationLib\ApplicationLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="applicant.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

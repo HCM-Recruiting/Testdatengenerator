@@ -1,0 +1,12 @@
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\bin\Debug\net8.0\ApplicationLib.deps.json
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\bin\Debug\net8.0\ApplicationLib.dll
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\bin\Debug\net8.0\ApplicationLib.pdb
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.AssemblyInfoInputs.cache
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.AssemblyInfo.cs
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.csproj.CoreCompileInputs.cache
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.sourcelink.json
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.dll
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\refint\ApplicationLib.dll
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ApplicationLib.pdb
+C:\Schule\Diplomarbeit-HCM\Program\Testdatengenerator\Backend\HCM-Backend\ApplicationLib\obj\Debug\net8.0\ref\ApplicationLib.dll
