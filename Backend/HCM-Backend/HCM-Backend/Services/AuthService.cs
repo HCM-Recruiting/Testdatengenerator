@@ -20,24 +20,30 @@ namespace HCMBackend.Services
             client = new HttpClient();
         }
 
+        private void ShowHashResult(string propName, object propValue, string hashValue)
+        {
+            Console.WriteLine($"HashResult after {propName}: {propValue} = {hashValue}");
+        }
+
         private string CreateSignature(string requestURL, string requestMethod, string content, string nonce, string timestamp)
         {
             string algorithm = "HmacSHA1";
 
             string signature = CreateHash(clientID, apiSharedKey, algorithm);
-            Console.WriteLine("HashResult after clientId: " + clientID + " = "+signature);
+            ShowHashResult(nameof(clientID), clientID, signature);
             signature = CreateHash(requestURL, signature, algorithm);
-            Console.WriteLine("HashResult after requestUrl: " + requestURL +" = " +signature);
+            ShowHashResult(nameof(requestURL), requestURL, signature);
             signature = CreateHash(requestMethod, signature, algorithm);
-            Console.WriteLine("HashResult after requestMethod: " + requestMethod + " = " + signature);
+            ShowHashResult(nameof(requestMethod), requestMethod, signature);
             signature = CreateHash(content, signature, algorithm);
-            Console.WriteLine("HashResult after content: " + content + " = " + signature);
+            ShowHashResult(nameof(content), content, signature);
             signature = CreateHash(nonce, signature, algorithm);
-            Console.WriteLine("HashResult after nonce: " + nonce + " = " + signature);
+            ShowHashResult(nameof(nonce), nonce, signature);
             signature = CreateHash(timestamp, signature, algorithm);
-            Console.WriteLine("HashResult after timestamp: " + timestamp + " = " + signature);
+            ShowHashResult(nameof(timestamp), timestamp, signature);
 
-            Console.WriteLine("hmac " + clientID + ":" + algorithm + ":" + timestamp + ":" + nonce + ":" + signature);
+
+            Console.WriteLine($"hmac {clientID}:{algorithm}:{timestamp}:{nonce}:{signature}");
             return "hmac " + clientID + ":" + algorithm + ":" + timestamp + ":" + nonce + ":" + signature;
         }
 
@@ -56,7 +62,7 @@ namespace HCMBackend.Services
         static string GenerateHash(string message, string key, string algorithm)
         {
             byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-            using (var hmac = new HMACSHA1(keyBytes)) // or HMACSHA1, HMACSHA512, etc. based on the algorithm
+            using (var hmac = new HMACSHA1(keyBytes))
             {
                 byte[] messageBytes = Encoding.UTF8.GetBytes(message);
                 byte[] hashBytes = hmac.ComputeHash(messageBytes);
@@ -65,43 +71,16 @@ namespace HCMBackend.Services
         }
 
 
-        public void PostApplicationXML()
+        public bool PostApplicationXML(string fileName)
         {
             string baseRequestURL = "https://intplay.test.infoniqa.io/ei/services/restProxy/standard/application";
             //string baseReq = "intplay.test.infoniqa.io/ei/services/restProxy/standard/";
 
             string requestURL = $"{baseRequestURL}";
 
-            Application testApplication = new Application()
-            {
-                JobOffer = new JobOffer
-                {
-                    Identifier = "TOP-2023-000006",
-                    Id = "8a0bc0a88adab669018adacb06730022"
-                },
-                IncomingDate = DateTime.Parse("2024-02-19"),
-                Applicant = new Applicant
-                {
-                    Gender = "4",
-                    Address = new Address
-                    {
-                        FirstName = "Emi",
-                        LastName = "Lio",
-                    }
-                }
-            };
-
-            //new StringContent(jsonString, Encoding.UTF8, "application/json")
-
-            //Console.WriteLine("serialized object: " + SerializeObjectToXml(testApplication));
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load("applicant.xml");
-
-            // Access XML elements using XPath or other methods
-            string xmlContent = File.ReadAllText("applicant.xml");
+            string xmlContent = File.ReadAllText(fileName);
             string content = xmlContent.ToString();
             string nonce = "18C31CEBF5CB69D2BFD920E792FEF7FF";
-            //string timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddTHHmmssZ");
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
             string authorizationHeader = CreateSignature(baseRequestURL, "POST", content, nonce, timestamp);
@@ -109,114 +88,6 @@ namespace HCMBackend.Services
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             client.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("hmac",authorizationHeader);
-            //client.DefaultRequestHeaders.Accept.Add("application/xml;charset=UTF-8");
-            //client.DefaultRequestHeaders.Add("Accept", "application/json");
-            //    try
-            //    {
-            //        using (HttpClient httpClient = new HttpClient())
-            //        {
-            //            httpClient.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
-            //            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
-            //            var httpContent = new StringContent(content.XDocument.ToString(), Encoding.UTF8, "application/xml");
-            //            using (HttpResponseMessage HttpResponseMessage = await httpClient.GetAsync(string.Concat(_RootUrl, ""), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
-            //            {
-            //                if (HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-            //                    using (HttpContent HttpContent = HttpResponseMessage.Content)
-            //                    {
-            //                        string MyContent = await HttpContent.ReadAsStringAsync();
-            //                        var root = JsonConvert.DeserializeObject<RootObject>(MyContent);
-            //                        ReturnContinentModels = new AsyncObservableCollection<ContentModel>(root.products);
-            //                    }
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex) { Console.WriteLine(ex.Message); }
-            //    return ReturnContinentModels;
-            //}
-
-            HttpResponseMessage response = client.PostAsync(requestURL,new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                string responseBody = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(responseBody);
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-            }
-        }
-
-        public void PostApplicationsJson()
-        {
-            string baseRequestURL = "https://intplay.test.infoniqa.io/ei/services/restProxy/standard/application";
-            //string baseReq = "intplay.test.infoniqa.io/ei/services/restProxy/standard/";
-
-            string requestURL = $"{baseRequestURL}";
-
-            Application testApplication = new Application()
-            {
-                JobOffer = new JobOffer
-                {
-                    Identifier = "TOP-2023-000006",
-                    Id = "8a0bc0a88adab669018adacb06730022"
-                },
-                IncomingDate = DateTime.Parse("2024-02-19"),
-                Applicant = new Applicant
-                {
-                    Gender = "4",
-                    Address = new Address
-                    {
-                        FirstName = "Emi",
-                        LastName = "Lio",
-                    }
-                }
-            };
-
-            //new StringContent(jsonString, Encoding.UTF8, "application/json")
-
-            //Console.WriteLine("serialized object: " + SerializeObjectToXml(testApplication));
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load("applicant.xml");
-
-            // Access XML elements using XPath or other methods
-            string xmlContent = File.ReadAllText("applicant.xml");
-            string content = xmlContent.ToString();
-            string nonce = "18C31CEBF5CB69D2BFD920E792FEF7FF";
-            //string timestamp = DateTimeOffset.UtcNow.ToString("yyyyMMddTHHmmssZ");
-            string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-
-            string authorizationHeader = CreateSignature(baseRequestURL, "POST", content, nonce, timestamp);
-
-            client.DefaultRequestHeaders.Clear();
-            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
-            client.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("hmac",authorizationHeader);
-            //client.DefaultRequestHeaders.Accept.Add("application/xml;charset=UTF-8");
-            //client.DefaultRequestHeaders.Add("Accept", "application/json");
-            //    try
-            //    {
-            //        using (HttpClient httpClient = new HttpClient())
-            //        {
-            //            httpClient.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
-            //            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
-            //            var httpContent = new StringContent(content.XDocument.ToString(), Encoding.UTF8, "application/xml");
-            //            using (HttpResponseMessage HttpResponseMessage = await httpClient.GetAsync(string.Concat(_RootUrl, ""), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
-            //            {
-            //                if (HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-            //                    using (HttpContent HttpContent = HttpResponseMessage.Content)
-            //                    {
-            //                        string MyContent = await HttpContent.ReadAsStringAsync();
-            //                        var root = JsonConvert.DeserializeObject<RootObject>(MyContent);
-            //                        ReturnContinentModels = new AsyncObservableCollection<ContentModel>(root.products);
-            //                    }
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex) { Console.WriteLine(ex.Message); }
-            //    return ReturnContinentModels;
-            //}
 
             HttpResponseMessage response = client.PostAsync(requestURL, new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
 
@@ -224,6 +95,62 @@ namespace HCMBackend.Services
             {
                 string responseBody = response.Content.ReadAsStringAsync().Result;
                 Console.WriteLine(responseBody);
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return false;
+            }
+        }
+
+        public void PostApplicationsJson()
+        {
+            string baseRequestURL = "https://intplay.test.infoniqa.io/ei/services/restProxy/standard/application";
+            string requestURL = $"{baseRequestURL}";
+
+
+            Application testApplication = new Application()
+            {
+                JobOffer = new JobOffer
+                {
+                    Identifier = "TOP-2023-000006",
+                    Id = "8a0bc0a88adab669018adacb06730022"
+                },
+                IncomingDate = DateTime.Now.ToString("yyyy-MM-dd"),
+                Applicant = new Applicant
+                {
+                    Gender = "4",
+                    Address = new Address
+                    {
+                        FirstName = "Johan",
+                        LastName = "Liebert",
+                    }
+                }
+            };
+
+            var jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+
+            string jsonContent = JsonConvert.SerializeObject(testApplication, jsonSerializerSettings);
+            string nonce = "18C31CEBF5CB69D2BFD920E792FEF7FF";
+            string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+
+            string authorizationHeader = CreateSignature(baseRequestURL, "POST", jsonContent, nonce, timestamp);
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+            client.DefaultRequestHeaders.Add("Accept", "application/json;charset=utf-8");
+
+            HttpResponseMessage response = client.PostAsync(requestURL, new StringContent(jsonContent, Encoding.UTF8, "application/json")).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = response.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(response.StatusCode + responseBody);
             }
             else
             {

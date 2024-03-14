@@ -8,20 +8,21 @@ namespace HCMBackend.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
-        ApplicationService _service;
+        ApplicationService _applicationService;
+        CreateService _createService;
         public PropertyController(ApplicationService service)
         {
-            _service = service;
+            _applicationService = service;
         }
 
         [HttpGet]
         public Dictionary<string, List<string>> GetClassDictionary()
         {
-            return _service.GetClassProperties();
+            return _applicationService.GetClassProperties();
         }
 
         [HttpPost]
-        public bool CreateProperties(Dictionary<string, List<Dictionary<string,int>>> classPropertyDictionary)
+        public bool CreateProperties(Dictionary<string, List<Dictionary<string,int>>> classPropertyDictionary, int amount)
         {
             Console.WriteLine("Received dictionary: ");
 
@@ -37,8 +38,7 @@ namespace HCMBackend.Controllers
                     }
                 }
             }
-
-            return true;
+            return _createService.CreateApplicationsXML(classPropertyDictionary, amount);
         }
     }
 }
