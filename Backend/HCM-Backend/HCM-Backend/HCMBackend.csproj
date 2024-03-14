@@ -16,10 +16,17 @@
 
   <ItemGroup>
     <Folder Include="Dtos\" />
+    <Folder Include="GeneratedApplications\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ApplicationLib\ApplicationLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="applicant.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

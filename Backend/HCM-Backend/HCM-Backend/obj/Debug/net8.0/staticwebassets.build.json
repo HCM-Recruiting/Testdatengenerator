@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Qhx5WLKSUqgj736CLaVS0dOXJDttZbhgNckcwTn8rpA=",
+  "Source": "HCMBackend",
+  "BasePath": "_content/HCMBackend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

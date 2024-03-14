@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities>
+	<application>
+		<jobOffer> <!-- Business Lead -->
+			<identifier>TOP-2023-000006</identifier>
+			<id>8a0bc0a88adab669018adacb06730022</id>
+		</jobOffer>
+		<incomingDate>2024-02-19</incomingDate>
+		<applicant>
+			<gender>4</gender>
+			<address>
+				<firstName>Johan</firstName>
+				<lastName>Liebert</lastName>
+			</address>
+		</applicant>
+	</application>
+</entities>
+
+
+<!--
+status
+bewerbungsart
+bewerbungsform
+-->
