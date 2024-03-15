@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Dtos\" />
-    <Folder Include="GeneratedApplications\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +25,15 @@
   <ItemGroup>
     <None Update="applicant.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MockData\address.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MockData\firstName.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MockData\lastName.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

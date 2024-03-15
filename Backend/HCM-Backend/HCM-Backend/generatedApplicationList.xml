@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<entities>
+  <application>
+    <jobOffer>
+      <identifier>TOP - 2023 - 000006</identifier>
+      <id>8a0bc0a88adab669018adacb06730022</id>
+    </jobOffer>
+    <applicant>
+      <address>
+        <firstName>Hayyim</firstName>
+        <lastName>Nealey</lastName>
+      </address>
+    </applicant>
+  </application>
+</entities>
