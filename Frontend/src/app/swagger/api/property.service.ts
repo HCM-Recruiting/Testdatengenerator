@@ -145,14 +145,21 @@ export class PropertyService {
     }
 
     /**
+     * @param amount 
      * @param requestBody 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public propertyPost(requestBody?: { [key: string]: Array<{ [key: string]: number; }>; }, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<boolean>;
-    public propertyPost(requestBody?: { [key: string]: Array<{ [key: string]: number; }>; }, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<HttpResponse<boolean>>;
-    public propertyPost(requestBody?: { [key: string]: Array<{ [key: string]: number; }>; }, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<HttpEvent<boolean>>;
-    public propertyPost(requestBody?: { [key: string]: Array<{ [key: string]: number; }>; }, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<any> {
+    public propertyPost(amount?: number, requestBody?: { [key: string]: { [key: string]: number; }; }, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<boolean>;
+    public propertyPost(amount?: number, requestBody?: { [key: string]: { [key: string]: number; }; }, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<HttpResponse<boolean>>;
+    public propertyPost(amount?: number, requestBody?: { [key: string]: { [key: string]: number; }; }, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<HttpEvent<boolean>>;
+    public propertyPost(amount?: number, requestBody?: { [key: string]: { [key: string]: number; }; }, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'text/plain' | 'application/json' | 'text/json', context?: HttpContext}): Observable<any> {
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (amount !== undefined && amount !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>amount, 'amount');
+        }
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -203,6 +210,7 @@ export class PropertyService {
             {
                 context: localVarHttpContext,
                 body: requestBody,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

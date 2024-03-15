@@ -29,13 +29,13 @@ export class PropertyWindowComponent implements OnInit {
         this.AllClasses = Object.keys(data);
         console.log(this.AllClasses);
         this.AllClasses.forEach((className) => {
-          this.SavedClassProperties[className] = [];
+          this.SavedClassProperties[className] = {};
         });
       });
   }
 
   updatePropData($event: SavedProperties) {
-    this.SavedClassProperties[this.SelectedClass][0] = $event;
+    this.SavedClassProperties[this.SelectedClass] = $event;
     this.classClicked(this.SelectedClass);
   }
 
@@ -49,10 +49,10 @@ export class PropertyWindowComponent implements OnInit {
       this.availableProperties = [...this.ClassPropDictionary[className]];
     }
 
-    if (this.SavedClassProperties[className] !== undefined && this.SavedClassProperties[className].length > 0) {
-      const propertyArray = this.SavedClassProperties[className];
+    if (this.SavedClassProperties[className] !== undefined && Object.keys(this.SavedClassProperties[className]).length > 0) {
+      const property = this.SavedClassProperties[className];
     
-      propertyArray.forEach((property) => {
+
         for (const propName in property) {
           if (property.hasOwnProperty(propName)) {
             const value = property[propName];
@@ -64,12 +64,12 @@ export class PropertyWindowComponent implements OnInit {
             }
           }
         }
-      });
+
     }
   }
 
   saveChanges() {
-    this.propService.propertyPost(this.SavedClassProperties).subscribe((data) => {
+    this.propService.propertyPost(1, this.SavedClassProperties).subscribe((data) => {
       console.log(data);
     });
     }
