@@ -1,5 +1,6 @@
 ﻿using ApplicationLib;
 using Newtonsoft.Json;
+using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -11,14 +12,22 @@ namespace HCMBackend.Services
 {
     public class AuthService
     {
-        private string clientID = "htlgr";
-        private string apiSharedKey = "D92CE36654826C4B21C39C77AA226A==";
+        public IConfiguration _configuration { get; set; }
+        private string _clientID = "";
+        private string _apiSharedKey = "";
+        private string _baseRequestUrl = "";
         private HttpClient client;
 
-        public AuthService()
+        public AuthService(IConfiguration iConfig)
         {
+            _configuration = iConfig;
             client = new HttpClient();
+            _clientID = _configuration.GetValue<string>("MyAuthData:ClientId");
+            _apiSharedKey = _configuration.GetValue<string>("MyAuthData:ApiSharedKey");
+            _baseRequestUrl = _configuration.GetValue<string>("MyAuthData:BaseRequestURL");
         }
+
+        #region CreateHash
 
         private void ShowHashResult(string propName, object propValue, string hashValue)
         {
@@ -29,8 +38,8 @@ namespace HCMBackend.Services
         {
             string algorithm = "HmacSHA1";
 
-            string signature = CreateHash(clientID, apiSharedKey, algorithm);
-            ShowHashResult(nameof(clientID), clientID, signature);
+            string signature = CreateHash(_clientID, _apiSharedKey, algorithm);
+            ShowHashResult(nameof(_clientID), _clientID, signature);
             signature = CreateHash(requestURL, signature, algorithm);
             ShowHashResult(nameof(requestURL), requestURL, signature);
             signature = CreateHash(requestMethod, signature, algorithm);
@@ -43,8 +52,8 @@ namespace HCMBackend.Services
             ShowHashResult(nameof(timestamp), timestamp, signature);
 
 
-            Console.WriteLine($"hmac {clientID}:{algorithm}:{timestamp}:{nonce}:{signature}");
-            return "hmac " + clientID + ":" + algorithm + ":" + timestamp + ":" + nonce + ":" + signature;
+            Console.WriteLine($"hmac {_clientID}:{algorithm}:{timestamp}:{nonce}:{signature}");
+            return "hmac " + _clientID + ":" + algorithm + ":" + timestamp + ":" + nonce + ":" + signature;
         }
 
         static string CreateHash(string message, string key, string algorithm)
@@ -70,26 +79,24 @@ namespace HCMBackend.Services
             }
         }
 
+        #endregion
+
 
         public bool PostApplicationXML(string fileName)
         {
-            string baseRequestURL = "https://intplay.test.infoniqa.io/ei/services/restProxy/standard/application";
-            //string baseReq = "intplay.test.infoniqa.io/ei/services/restProxy/standard/";
 
-            string requestURL = $"{baseRequestURL}";
-
-            string xmlContent = File.ReadAllText(fileName);
+            string xmlContent = File.ReadAllText("applicant.xml");
             string content = xmlContent.ToString();
             string nonce = "18C31CEBF5CB69D2BFD920E792FEF7FF";
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
-            string authorizationHeader = CreateSignature(baseRequestURL, "POST", content, nonce, timestamp);
+            string authorizationHeader = CreateSignature(_baseRequestUrl, "POST", content, nonce, timestamp);
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             client.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
 
-            HttpResponseMessage response = client.PostAsync(requestURL, new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
+            HttpResponseMessage response = client.PostAsync(_baseRequestUrl, new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -158,20 +165,9 @@ namespace HCMBackend.Services
             }
         }
 
-        public static string SerializeObjectToXml<T>(T obj)
+        public List<JobOffer> GetAvailableJobOffers()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(T));
-
-            using (StringWriter writer = new Utf8StringWriter())
-            {
-                serializer.Serialize(writer, obj);
-                return writer.ToString();
-            }
-        }
-
-        public class Utf8StringWriter : StringWriter
-        {
-            public override Encoding Encoding => Encoding.UTF8;
+            return null;
         }
 
     }
