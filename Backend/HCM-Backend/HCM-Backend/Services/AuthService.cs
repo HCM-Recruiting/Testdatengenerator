@@ -6,25 +6,28 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace HCMBackend.Services
 {
     public class AuthService
     {
-        public IConfiguration _configuration { get; set; }
+        public IConfiguration configuration { get; set; }
         private string _clientID = "";
         private string _apiSharedKey = "";
         private string _baseRequestUrl = "";
+        private string _nonce = "";
         private HttpClient client;
 
         public AuthService(IConfiguration iConfig)
         {
-            _configuration = iConfig;
+            configuration = iConfig;
             client = new HttpClient();
-            _clientID = _configuration.GetValue<string>("MyAuthData:ClientId");
-            _apiSharedKey = _configuration.GetValue<string>("MyAuthData:ApiSharedKey");
-            _baseRequestUrl = _configuration.GetValue<string>("MyAuthData:BaseRequestURL");
+            _clientID = configuration.GetValue<string>("MyAuthData:ClientId");
+            _apiSharedKey = configuration.GetValue<string>("MyAuthData:ApiSharedKey");
+            _baseRequestUrl = configuration.GetValue<string>("MyAuthData:BaseRequestURL");
+            _nonce = configuration.GetValue<string>("MyAuthData:Nonce");
         }
 
         #region CreateHash
@@ -84,19 +87,18 @@ namespace HCMBackend.Services
 
         public bool PostApplicationXML(string fileName)
         {
-
+            string requestUrl = _baseRequestUrl + "/application";
             string xmlContent = File.ReadAllText("applicant.xml");
             string content = xmlContent.ToString();
-            string nonce = "18C31CEBF5CB69D2BFD920E792FEF7FF";
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
-            string authorizationHeader = CreateSignature(_baseRequestUrl, "POST", content, nonce, timestamp);
+            string authorizationHeader = CreateSignature(requestUrl, "POST", content, _nonce, timestamp);
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
             client.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
 
-            HttpResponseMessage response = client.PostAsync(_baseRequestUrl, new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
+            HttpResponseMessage response = client.PostAsync(requestUrl, new StringContent(xmlContent, Encoding.UTF8, "application/xml")).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -167,9 +169,56 @@ namespace HCMBackend.Services
 
         public List<JobOffer> GetAvailableJobOffers()
         {
-            return null;
+            string requestUrl = _baseRequestUrl + "/joboffer";
+            string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+
+            string authorizationHeader = CreateSignature(_baseRequestUrl, "GET", "", _nonce, timestamp);
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("Authorization", authorizationHeader);
+            client.DefaultRequestHeaders.Add("Accept", "application/xml;charset=UTF-8");
+
+            HttpResponseMessage response = client.GetAsync(requestUrl).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                List<JobOffer> responseBody = GetJobOffersFromXML(response.Content.ReadAsStringAsync().Result);
+                Console.WriteLine(responseBody);
+                return responseBody;
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return null;
+            }
         }
 
+        private List<JobOffer> GetJobOffersFromXML(string xml)
+        {
+            XDocument doc = XDocument.Parse(xml);
+            List<XElement> xmlJobOffers = doc.Descendants("jobOffer").ToList();
+            List<JobOffer> jobOffers = new();
+
+            Console.WriteLine("Found JobOffers:");
+
+            foreach (XElement xmlJobOffer in xmlJobOffers)
+            {
+                if (xmlJobOffer != null)
+                {
+                    // Extract identifier and id
+                    string identifier = xmlJobOffer.Element("identifier")?.Value;
+                    string id = xmlJobOffer.Element("id")?.Value;
+                    jobOffers.Add(new JobOffer
+                    {
+                        Id = id,
+                        Identifier = identifier
+                    });
+                    Console.WriteLine($"identifier: {identifier}");
+                    Console.WriteLine($"id: {id}");
+                }
+            }
+            return jobOffers;
+        }
     }
 }
 

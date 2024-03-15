@@ -32,6 +32,8 @@ namespace HCMBackend.Services
         public bool CreateApplicationsXML(Dictionary<string, Dictionary<string, int>> classPropertyDictionary, int amount)
         {
             List<Application> generatedApplicationList = new List<Application>();
+            List<JobOffer> jobOffers = _authService.GetAvailableJobOffers();
+            int jobOfferIndex = 0;
 
             for (int i = 0; i < amount; i++)
             {
@@ -62,11 +64,8 @@ namespace HCMBackend.Services
                             break;
                     }
                 }
-                    generatedApplication.JobOffer = new()
-                    {
-                        Identifier = "TOP - 2023 - 000006",
-                        Id = "8a0bc0a88adab669018adacb06730022"
-                    };
+                generatedApplication.JobOffer = jobOffers[jobOfferIndex];
+                jobOfferIndex = (jobOfferIndex + 1) % jobOffers.Count;
                 generatedApplicant.Address = generatedAddress;
                 generatedApplication.Applicant = generatedApplicant;
 
