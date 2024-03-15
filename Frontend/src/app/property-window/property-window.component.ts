@@ -14,63 +14,67 @@ import { SavedProperties } from '../interfaces/SavedProperties';
 })
 export class PropertyWindowComponent implements OnInit {
   private propService = inject(PropertyService);
-  ClassPropDictionary: ClassPropertyDictionary = {};
-  SavedClassProperties: PostClassPropertyDictionary = {};
+  classPropDictionary: ClassPropertyDictionary = {};
+  savedClassProperties: PostClassPropertyDictionary = {};
   propData: SavedProperties = {};
-  AllClasses: string[] = [];
+  allClasses: string[] = [];
   availableProperties: string[] = [];
-  SelectedClass: string = '';
+  selectedClass: string = '';
+  successFullyCreated: boolean = false;
 
   ngOnInit(): void {
     this.propService
       .propertyGet()
       .subscribe((data: ClassPropertyDictionary) => {
-        this.ClassPropDictionary = data;
-        this.AllClasses = Object.keys(data);
-        console.log(this.AllClasses);
-        this.AllClasses.forEach((className) => {
-          this.SavedClassProperties[className] = {};
+        this.classPropDictionary = data;
+        this.allClasses = Object.keys(data);
+        console.log(this.allClasses);
+        this.allClasses.forEach((className) => {
+          this.savedClassProperties[className] = {};
         });
       });
   }
 
   updatePropData($event: SavedProperties) {
-    this.SavedClassProperties[this.SelectedClass] = $event;
-    this.classClicked(this.SelectedClass);
+    this.savedClassProperties[this.selectedClass] = $event;
+    this.classClicked(this.selectedClass);
   }
 
   classClicked(className: string) {
     console.log(className);
-    console.log(this.ClassPropDictionary[className]);
+    console.log(this.classPropDictionary[className]);
     this.propData = {};
-    this.SelectedClass = className;
+    this.selectedClass = className;
 
-    if (this.ClassPropDictionary[className] !== null) {
-      this.availableProperties = [...this.ClassPropDictionary[className]];
+    if (this.classPropDictionary[className] !== null) {
+      this.availableProperties = [...this.classPropDictionary[className]];
     }
 
-    if (this.SavedClassProperties[className] !== undefined && Object.keys(this.SavedClassProperties[className]).length > 0) {
-      const property = this.SavedClassProperties[className];
-    
+    if (
+      this.savedClassProperties[className] !== undefined &&
+      Object.keys(this.savedClassProperties[className]).length > 0
+    ) {
+      const property = this.savedClassProperties[className];
 
-        for (const propName in property) {
-          if (property.hasOwnProperty(propName)) {
-            const value = property[propName];
-            this.propData[propName] = value;
-    
-            const index = this.availableProperties.indexOf(propName);
-            if (index !== -1) {
-              this.availableProperties.splice(index, 1);
-            }
+      for (const propName in property) {
+        if (property.hasOwnProperty(propName)) {
+          const value = property[propName];
+          this.propData[propName] = value;
+
+          const index = this.availableProperties.indexOf(propName);
+          if (index !== -1) {
+            this.availableProperties.splice(index, 1);
           }
         }
-
+      }
     }
   }
 
   saveChanges() {
-    this.propService.propertyPost(1, this.SavedClassProperties).subscribe((data) => {
-      console.log(data);
-    });
-    }
+    this.propService
+      .propertyPost(10, this.savedClassProperties)
+      .subscribe((data) => {
+        console.log('Post success: ' + data);
+      });
+  }
 }
