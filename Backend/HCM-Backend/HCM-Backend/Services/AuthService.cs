@@ -18,6 +18,8 @@ namespace HCMBackend.Services
         private string _apiSharedKey = "";
         private string _baseRequestUrl = "";
         private string _nonce = "";
+        private string _fileName = "";
+        private bool _getJobOffersFromCsv = false;
         private HttpClient client;
 
         public AuthService(IConfiguration iConfig)
@@ -28,6 +30,8 @@ namespace HCMBackend.Services
             _apiSharedKey = configuration.GetValue<string>("MyAuthData:ApiSharedKey");
             _baseRequestUrl = configuration.GetValue<string>("MyAuthData:BaseRequestURL");
             _nonce = configuration.GetValue<string>("MyAuthData:Nonce");
+            _fileName = configuration.GetValue<string>("MyAuthData:FileName");
+            _getJobOffersFromCsv = configuration.GetValue<bool>("MyAuthData:ReadJobOffersFromCSV");
         }
 
         #region CreateHash
@@ -169,6 +173,18 @@ namespace HCMBackend.Services
 
         public List<JobOffer> GetAvailableJobOffers()
         {
+            if (_getJobOffersFromCsv)
+            {
+                var jobOffersFromCsv = File.ReadAllLines("MockData/jobOffers.csv");
+                List<JobOffer> csvJobOffers = new List<JobOffer>();
+                foreach (var job in jobOffersFromCsv)
+                {
+                    var csvSplit = job.Split(',');
+                    csvJobOffers.Add(new JobOffer { Id = csvSplit[0], Identifier = csvSplit[1] });
+                }
+                return csvJobOffers;
+            }
+
             string requestUrl = _baseRequestUrl + "/joboffer";
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
@@ -183,7 +199,6 @@ namespace HCMBackend.Services
             if (response.IsSuccessStatusCode)
             {
                 List<JobOffer> responseBody = GetJobOffersFromXML(response.Content.ReadAsStringAsync().Result);
-                Console.WriteLine(responseBody);
                 return responseBody;
             }
             else

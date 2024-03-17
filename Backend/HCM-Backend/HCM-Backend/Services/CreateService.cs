@@ -203,7 +203,7 @@ namespace HCMBackend.Services
                             applicant.Birthday = GenerateRandomBirthday(18, 50);
                             break;
                         case "BirthLocation":
-                            applicant.BirthLocation = "";
+                            applicant.BirthLocation = xProData.countryShortcodes[random.Next(xProData.countryShortcodes.Length)];
                             break;
                         case "Nationality":
                             applicant.Nationality = xProData.countryShortcodes[random.Next(xProData.countryShortcodes.Length)];
