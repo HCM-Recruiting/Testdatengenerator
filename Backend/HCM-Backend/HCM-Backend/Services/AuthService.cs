@@ -175,7 +175,7 @@ namespace HCMBackend.Services
         {
             if (_getJobOffersFromCsv)
             {
-                var jobOffersFromCsv = File.ReadAllLines("MockData/jobOffers.csv");
+                var jobOffersFromCsv = File.ReadAllLines("MockData/jobOffers.csv").Skip(1);
                 List<JobOffer> csvJobOffers = new List<JobOffer>();
                 foreach (var job in jobOffersFromCsv)
                 {

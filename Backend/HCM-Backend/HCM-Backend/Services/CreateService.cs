@@ -177,9 +177,9 @@ namespace HCMBackend.Services
                         case "SalaryUnit":
                             application.SalaryUnit = xProData.salaryUnit[random.Next(1, xProData.salaryUnit.Length)];
                             break;
-                        case "ActivityDimension": //not yet found out
+                        case "ActivityDimension": 
                             break;
-                        case "OfferKnownBy": // not yet found out
+                        case "OfferKnownBy": 
                             break;
                     }
             }
@@ -233,7 +233,7 @@ namespace HCMBackend.Services
         {
             if (chance < 100)
             {
-                int randomNumber = random.Next(1, chance);
+                int randomNumber = random.Next(1, 100);
                 return randomNumber <= chance;
             }
             return true;

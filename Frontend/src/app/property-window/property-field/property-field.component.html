@@ -18,14 +18,16 @@
       </select>
       <label for="floatingSelect">Selected Property</label>
     </div>
+    <span class="valuePadding">
     <input
       #chance
+      (change)="updateSavedProperties(selectedProp.value, chance.valueAsNumber)"
       (click)="updateSavedProperties(selectedProp.value, chance.valueAsNumber)"
       min="1"
       max="100"
       type="number"
       [value]="propData[item]"
-    />
+    />%</span>
     <button class="btn btn-danger" (click)="removeProperty(item)">
       Remove Field
     </button>
@@ -34,5 +36,7 @@
   }
 </div>
 @if (availableProperties.length > 0) {
-<button class="btn btn-success btn-lg" (click)="addProperty()">Add Field +</button>
+<button class="btn btn-success btn-lg" (click)="addProperty()">
+  Add Field +
+</button>
 }

@@ -33,13 +33,8 @@ export class PropertyWindowComponent implements OnInit {
         this.classPropDictionary = data;
         this.allClasses = Object.keys(data);
         console.log(this.allClasses);
-        // this.allClasses.forEach((className) => {
-        //   this.savedClassProperties[className] = {};
-        // });
         this.loadAllPropData();
       });
-
-    
   }
 
   loadAllPropData() {
@@ -62,17 +57,12 @@ export class PropertyWindowComponent implements OnInit {
   }
 
   updatePropData($event: SavedProperties) {
-    //this.savedClassProperties[this.selectedClass] = $event;
     this.savedClassProperties["AllClasses"] = $event;
-    //this.optionalPropertyChanged();
     this.classClicked("AllClasses");
   }
 
   classClicked(className: string) {
     console.log(className);
-    //console.log(this.classPropDictionary[className]);
-    // this.propData = {};
-    // this.selectedClass = className;
 
     if (this.allClassPropDictionary[className] !== null) {
       this.availableProperties = [...this.allClassPropDictionary[className]];
@@ -117,7 +107,6 @@ export class PropertyWindowComponent implements OnInit {
         }
       });
     }
-      //this.postDictionary["AllClasses"] = this.savedClassProperties["AllClasses"];
       console.log(this.postDictionary);
     this.propService
       .propertyPost(this.applicationAmount, this.postDictionary)
