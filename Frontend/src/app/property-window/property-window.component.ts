@@ -24,7 +24,7 @@ export class PropertyWindowComponent implements OnInit {
   availableProperties: string[] = [];
   successFullyCreated: boolean = false;
   applicationAmount: number = 1;
-  combinedPropList : string [] = [];
+  combinedPropList: string[] = [];
 
   ngOnInit(): void {
     this.propService
@@ -41,24 +41,20 @@ export class PropertyWindowComponent implements OnInit {
     for (const className of this.allClasses) {
       this.postDictionary[className] = {};
     }
-      Object.values(this.classPropDictionary).skip(1).forEach((value) => {
+    Object.values(this.classPropDictionary)
+      .skip(1)
+      .forEach((value) => {
         this.combinedPropList = [...this.combinedPropList, ...value];
         console.log(this.combinedPropList);
       });
-      this.allClassPropDictionary["AllClasses"] = this.combinedPropList;
-      console.log(this.allClassPropDictionary);
-      this.classClicked("AllClasses");
-  }
-
-  optionalPropertyChanged() {
-    if (this.allClassPropDictionary !== null) {
-    
-    }
+    this.allClassPropDictionary['AllClasses'] = this.combinedPropList;
+    console.log(this.allClassPropDictionary);
+    this.classClicked('AllClasses');
   }
 
   updatePropData($event: SavedProperties) {
-    this.savedClassProperties["AllClasses"] = $event;
-    this.classClicked("AllClasses");
+    this.savedClassProperties['AllClasses'] = $event;
+    this.classClicked('AllClasses');
   }
 
   classClicked(className: string) {
@@ -89,28 +85,27 @@ export class PropertyWindowComponent implements OnInit {
   }
 
   saveChanges() {
-    console.log(this.savedClassProperties);
-    console.log(this.postDictionary);
-    console.log(this.classPropDictionary);
-    if (this.savedClassProperties["AllClasses"] !== undefined) {
+    if (this.savedClassProperties['AllClasses'] !== undefined) {
       Object.keys(this.classPropDictionary).forEach((key) => {
         const value = this.classPropDictionary[key];
         if (value !== undefined) {
           value.forEach((propName) => {
-            if (this.savedClassProperties["AllClasses"][propName] !== undefined) {
+            if (
+              this.savedClassProperties['AllClasses'][propName] !== undefined
+            ) {
               if (!this.postDictionary[key]) {
                 this.postDictionary[key] = {};
               }
-              this.postDictionary[key][propName] = this.savedClassProperties["AllClasses"][propName];
+              this.postDictionary[key][propName] =
+                this.savedClassProperties['AllClasses'][propName];
             }
           });
         }
       });
     }
-      console.log(this.postDictionary);
     this.propService
       .propertyPost(this.applicationAmount, this.postDictionary)
-      .subscribe((data : boolean) => {
+      .subscribe((data: boolean) => {
         console.log('Post success: ' + data);
         this.successFullyCreated = data;
       });
