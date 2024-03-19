@@ -1,3 +1,3 @@
 export interface PostClassPropertyDictionary {
-  [className: string]: Array<{ [propName: string]: number }>;
+  [className: string]: { [propName: string]: number };
 }

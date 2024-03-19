@@ -4,73 +4,109 @@ import { ClassPropertyDictionary } from '../interfaces/ClassPropertyDictionary';
 import { PostClassPropertyDictionary } from '../interfaces/PostClassPropertyDictionary';
 import { PropertyFieldComponent } from './property-field/property-field.component';
 import { SavedProperties } from '../interfaces/SavedProperties';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-property-window',
   standalone: true,
-  imports: [PropertyFieldComponent],
+  imports: [PropertyFieldComponent, FormsModule],
   templateUrl: './property-window.component.html',
   styleUrl: './property-window.component.scss',
 })
 export class PropertyWindowComponent implements OnInit {
   private propService = inject(PropertyService);
-  ClassPropDictionary: ClassPropertyDictionary = {};
-  SavedClassProperties: PostClassPropertyDictionary = {};
+  classPropDictionary: ClassPropertyDictionary = {};
+  allClassPropDictionary: ClassPropertyDictionary = {};
+  savedClassProperties: PostClassPropertyDictionary = {};
+  postDictionary: PostClassPropertyDictionary = {};
   propData: SavedProperties = {};
-  AllClasses: string[] = [];
+  allClasses: string[] = [];
   availableProperties: string[] = [];
-  SelectedClass: string = '';
+  successFullyCreated: boolean = false;
+  applicationAmount: number = 1;
+  combinedPropList: string[] = [];
 
   ngOnInit(): void {
     this.propService
       .propertyGet()
       .subscribe((data: ClassPropertyDictionary) => {
-        this.ClassPropDictionary = data;
-        this.AllClasses = Object.keys(data);
-        console.log(this.AllClasses);
-        this.AllClasses.forEach((className) => {
-          this.SavedClassProperties[className] = [];
-        });
+        this.classPropDictionary = data;
+        this.allClasses = Object.keys(data);
+        console.log(this.allClasses);
+        this.loadAllPropData();
       });
   }
 
+  loadAllPropData() {
+    for (const className of this.allClasses) {
+      this.postDictionary[className] = {};
+    }
+    Object.values(this.classPropDictionary)
+      .forEach((value) => {
+        this.combinedPropList = [...this.combinedPropList, ...value];
+        console.log(this.combinedPropList);
+      });
+    this.allClassPropDictionary['AllClasses'] = this.combinedPropList;
+    console.log(this.allClassPropDictionary);
+    this.classClicked('AllClasses');
+  }
+
   updatePropData($event: SavedProperties) {
-    this.SavedClassProperties[this.SelectedClass][0] = $event;
-    this.classClicked(this.SelectedClass);
+    this.savedClassProperties['AllClasses'] = $event;
+    this.classClicked('AllClasses');
   }
 
   classClicked(className: string) {
     console.log(className);
-    console.log(this.ClassPropDictionary[className]);
-    this.propData = {};
-    this.SelectedClass = className;
 
-    if (this.ClassPropDictionary[className] !== null) {
-      this.availableProperties = [...this.ClassPropDictionary[className]];
+    if (this.allClassPropDictionary[className] !== null) {
+      this.availableProperties = [...this.allClassPropDictionary[className]];
     }
 
-    if (this.SavedClassProperties[className] !== undefined && this.SavedClassProperties[className].length > 0) {
-      const propertyArray = this.SavedClassProperties[className];
-    
-      propertyArray.forEach((property) => {
-        for (const propName in property) {
-          if (property.hasOwnProperty(propName)) {
-            const value = property[propName];
-            this.propData[propName] = value;
-    
-            const index = this.availableProperties.indexOf(propName);
-            if (index !== -1) {
-              this.availableProperties.splice(index, 1);
-            }
+    if (
+      this.savedClassProperties[className] !== undefined &&
+      Object.keys(this.savedClassProperties[className]).length > 0
+    ) {
+      const property = this.savedClassProperties[className];
+
+      for (const propName in property) {
+        if (property.hasOwnProperty(propName)) {
+          const value = property[propName];
+          this.propData[propName] = value;
+
+          const index = this.availableProperties.indexOf(propName);
+          if (index !== -1) {
+            this.availableProperties.splice(index, 1);
           }
         }
-      });
+      }
     }
   }
 
   saveChanges() {
-    this.propService.propertyPost(this.SavedClassProperties).subscribe((data) => {
-      console.log(data);
-    });
+    if (this.savedClassProperties['AllClasses'] !== undefined) {
+      Object.keys(this.classPropDictionary).forEach((key) => {
+        const value = this.classPropDictionary[key];
+        if (value !== undefined) {
+          value.forEach((propName) => {
+            if (
+              this.savedClassProperties['AllClasses'][propName] !== undefined
+            ) {
+              if (!this.postDictionary[key]) {
+                this.postDictionary[key] = {};
+              }
+              this.postDictionary[key][propName] =
+                this.savedClassProperties['AllClasses'][propName];
+            }
+          });
+        }
+      });
     }
+    this.propService
+      .propertyPost(this.applicationAmount, this.postDictionary)
+      .subscribe((data: boolean) => {
+        console.log('Post success: ' + data);
+        this.successFullyCreated = data;
+      });
+  }
 }

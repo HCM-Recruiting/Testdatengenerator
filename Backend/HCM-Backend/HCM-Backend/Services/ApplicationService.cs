@@ -1,4 +1,5 @@
 ﻿using ApplicationLib;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace HCMBackend.Services
@@ -30,7 +31,7 @@ namespace HCMBackend.Services
             List<string> propertyNames = new List<string>();
             foreach (PropertyInfo property in properties)
             {
-                if (!property.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.RequiredAttribute), true).Any()
+                if (!property.GetCustomAttributes(typeof(RequiredAttribute), true).Any()
                     && (property.PropertyType == typeof(string) || property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(int)))
                 {
                     propertyNames.Add(property.Name);

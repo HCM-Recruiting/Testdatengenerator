@@ -3,23 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace ApplicationLib
 {
     public class SocioDemographicData
     {
+        [XmlElement("birthName")]
         public string BirthName { get; set; }
+        [XmlElement("familyStatus")]
         public string FamilyStatus { get; set; }
-        public string FamilyStatusDescription { get; set; }
-        public string MilitaryService { get; set; }
-        public DateTime MilitaryFrom { get; set; }
-        public DateTime MilitaryTo { get; set; }
+        [XmlElement("religion")]
         public string Religion { get; set; }
-        public string ReligionDescription { get; set; }
-        public DateTime WeddingDay { get; set; }
-        public List<NameChange> NameChanges { get; set; }
+        [XmlElement("militaryService")]
+        public string MilitaryService { get; set; }
+        [XmlElement("militaryFrom")]
+        public string MilitaryFrom { get; set; }
+        [XmlElement("militaryTo")]
+        public string MilitaryTo { get; set; }
+        [XmlElement("numberOfChildren")]
         public int NumberOfChildren { get; set; }
+        [XmlElement("hobbies")]
         public string Hobbies { get; set; }
+        [XmlElement("comments")]
         public string Comments { get; set; }
     }
 }

@@ -37,6 +37,8 @@ builder.Services
   );
 builder.Services.AddLogging(x => x.AddCustomFormatter());
 builder.Services.AddScoped<ApplicationService>();
+builder.Services.AddScoped<CreateService>();
+builder.Services.AddScoped<AuthService>();
 #endregion
 
 var app = builder.Build();

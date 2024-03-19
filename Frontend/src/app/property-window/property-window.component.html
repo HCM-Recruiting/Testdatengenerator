@@ -1,13 +1,26 @@
-<div class="buttonField">
-    <div class="buttonContainer">
-    @for (className of AllClasses; track $index) {
-        <button [value]="className" (click)="classClicked(className)">{{className}}</button>
-    }         
-</div>
-</div>
+<!-- <div class="btn-group btn-group-toggle buttonContainer" data-toggle="buttons">
+    @for (className of allClasses; track $index) {
+        <label class="btn btn-secondary">
+            <input [value]="className" (click)="classClicked(className)" type="radio" name="options" autocomplete="off"> {{className}}
+          </label>
+    }   
+</div> -->
 
 <div>
-    <app-property-field (saveNewPropData)="updatePropData($event)" [propData]="propData" [availableProperties]="availableProperties"></app-property-field>
+  <app-property-field
+    (saveNewPropData)="updatePropData($event)"
+    [propData]="propData"
+    [availableProperties]="availableProperties"
+  ></app-property-field>
+</div>
+<div>
+  Application amount:
+  <input type="number" min="1" [(ngModel)]="applicationAmount" />
+  <button (click)="saveChanges()">Generate Test-Data</button>
 </div>
 
-<button (click)="saveChanges()">Generate Test-Data</button>
+@if (successFullyCreated) {
+<div class="alert alert-success" role="alert">
+  Successfully added test-data to the Database!
+</div>
+}

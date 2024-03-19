@@ -7,9 +7,9 @@ using System.Xml.Serialization;
 
 namespace ApplicationLib
 {
-    public class Root
+    public class DocumentObject
     {
-        [XmlElement("entities")]
-        public List<Application> Entities { get; set; }
+        [XmlElement("document")]
+        public Document Document { get; set; }
     }
 }

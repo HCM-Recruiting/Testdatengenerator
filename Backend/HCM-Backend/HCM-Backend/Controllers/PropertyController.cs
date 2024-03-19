@@ -10,9 +10,10 @@ namespace HCMBackend.Controllers
     {
         ApplicationService _applicationService;
         CreateService _createService;
-        public PropertyController(ApplicationService service)
+        public PropertyController(ApplicationService service, CreateService createService)
         {
             _applicationService = service;
+            _createService = createService;
         }
 
         [HttpGet]
@@ -22,7 +23,7 @@ namespace HCMBackend.Controllers
         }
 
         [HttpPost]
-        public bool CreateProperties(Dictionary<string, List<Dictionary<string,int>>> classPropertyDictionary, int amount)
+        public bool CreateProperties(Dictionary<string, Dictionary<string,int>> classPropertyDictionary, int amount)
         {
             Console.WriteLine("Received dictionary: ");
 
@@ -30,13 +31,12 @@ namespace HCMBackend.Controllers
             {
                 Console.WriteLine($"Class: {entry.Key}");
 
-                foreach (var propertyList in entry.Value)
-                {
-                    foreach (var property in propertyList)
+
+                    foreach (var property in entry.Value)
                     {
                         Console.WriteLine($"  Property: {property.Key}, Value: {property.Value}");
                     }
-                }
+                
             }
             return _createService.CreateApplicationsXML(classPropertyDictionary, amount);
         }

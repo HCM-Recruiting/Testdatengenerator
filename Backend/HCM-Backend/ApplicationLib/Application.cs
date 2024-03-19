@@ -11,12 +11,16 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ApplicationLib
 {
+    [XmlRoot("application")]
     public class Application
     {
         [Required]
+        [XmlElement("jobOffer")]
         public JobOffer JobOffer { get; set; }
         [Required]
+        [XmlElement("incomingDate")]
         public string IncomingDate { get; set; }
+        [XmlElement("keepOnFile")]
         public bool KeepOnFile { get; set; }
         [XmlElement("retentionDate")]
         public string RetentionDate { get; set; }
@@ -40,8 +44,11 @@ namespace ApplicationLib
         public string ActivityDimension { get; set; }
         [XmlElement("offerKnownBy")]
         public string OfferKnownBy { get; set; }
+        [XmlElement("applicant")]
         public Applicant Applicant { get; set; }
+        [XmlElement("specificData")]
         public SpecificData SpecificData { get; set; }
+        [XmlElement("documents")]
         public List<Document> Documents { get; set; }
 
         public void Serialize(XmlWriter writer)
