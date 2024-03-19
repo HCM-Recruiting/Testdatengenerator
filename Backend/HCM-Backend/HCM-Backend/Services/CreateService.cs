@@ -16,8 +16,12 @@ namespace HCMBackend.Services
         private string[] firstNames;
         private string[] lastNames;
         private string[] addresses;
+        private string[] contacts;
+        private string _fileName;
 
-        public CreateService(AuthService authService)
+        public IConfiguration configuration { get; set; }
+
+        public CreateService(AuthService authService, IConfiguration iConfig)
         {
             _authService = authService;
             random = new Random();
@@ -25,6 +29,9 @@ namespace HCMBackend.Services
             firstNames = File.ReadAllLines("MockData/firstName.csv").Skip(1).ToArray();
             lastNames = File.ReadAllLines("MockData/lastName.csv").Skip(1).ToArray();
             addresses = File.ReadAllLines("MockData/address.csv").Skip(1).ToArray();
+            contacts = File.ReadAllLines("MockData/contacts.csv").Skip(1).ToArray();
+            configuration = iConfig;
+            _fileName = configuration.GetValue<string>("MyAuthData:FileName");
         }
 
 
@@ -57,10 +64,10 @@ namespace HCMBackend.Services
                     switch (item.Key)
                     {
                         case "SocioDemographicData":
-                            GenerateSocioDemographicData(item.Value);
+                            generatedApplicant.SocioDemographicData = GenerateSocioDemographicData(item.Value);
                             break;
                         case "Contact":
-                            GenerateContact(item.Value);
+                            generatedAddress.Contact = GenerateContact(item.Value);
                             break;
                     }
                 }
@@ -74,7 +81,7 @@ namespace HCMBackend.Services
 
 
 
-            using (XmlWriter writer = XmlWriter.Create("generatedApplicationList.xml"))
+            using (XmlWriter writer = XmlWriter.Create(_fileName))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("entities");
@@ -85,14 +92,50 @@ namespace HCMBackend.Services
                 writer.WriteEndElement();
             }
 
-            RemoveElementsWithDefaultValues("generatedApplicationList.xml");
+            RemoveElementsWithDefaultValues(_fileName);
 
-            return _authService.PostApplicationXML("applicant.xml");
+            return _authService.PostApplicationXML();
         }
 
-        private void GenerateSocioDemographicData(Dictionary<string, int> value)
+        private SocioDemographicData GenerateSocioDemographicData(Dictionary<string, int> socioProperties)
         {
-            
+            SocioDemographicData socioDemographicData = new();
+
+            foreach (var item in socioProperties)
+            {
+                if (ShouldCreate(item.Value))
+                    switch (item.Key)
+                    {
+                        case "birthName":
+                            socioDemographicData.BirthName = lastNames[random.Next(lastNames.Length)];
+                            break;
+                        case "familyStatus":
+                            socioDemographicData.FamilyStatus = random.Next(1,11).ToString();
+                            break;
+                        case "religion":
+                            socioDemographicData.Religion = "RK";
+                            break;
+                        case "militaryService":
+                            socioDemographicData.MilitaryService = random.Next(1, 5).ToString();
+                            break;
+                        case "militaryFrom":
+                            socioDemographicData.MilitaryFrom = GenerateRandomDate(5);
+                            break;
+                        case "militaryTo":
+                            socioDemographicData.MilitaryFrom = GenerateRandomDate(2);
+                            break;
+                        case "numberOfChildren":
+                            socioDemographicData.NumberOfChildren = random.Next(30);
+                            break;
+                        case "hobbies":
+                            socioDemographicData.Hobbies = "Gaming";
+                            break;
+                        case "comments":
+                            socioDemographicData.Comments = "Hallo";
+                            break;
+                    }
+            }
+            return socioDemographicData;
         }
         #region GenerateAddressAndContact
         private Address GenerateAddress(Dictionary<string, int> addressProperties)
@@ -131,15 +174,34 @@ namespace HCMBackend.Services
             return address;
         }
 
-        private Contact GenerateContact(Dictionary<string, int> addressProperties)
+        private Contact GenerateContact(Dictionary<string, int> contactProperties)
         {
             Contact contact = new Contact();
+            foreach (var item in contactProperties)
+            {
+                if (ShouldCreate(item.Value))
+                    switch (item.Key)
+                    {
+                        case "telNumber":
+                            contact.TelNumber = contacts[random.Next(contacts.Length)].Split(',')[0]; ;
+                            break;
+                        case "mobileNumber":
+                            contact.TelNumber = contacts[random.Next(contacts.Length)].Split(',')[0]; ;
+                            break;
+                        case "email":
+                            contact.TelNumber = contacts[random.Next(contacts.Length)].Split(',')[0]; ;
+                            break;
+                        case "website": //There are no values associated with website on the database
+                            
+                            break;
+                    }
+            }
             return contact;
         }
-        #endregion
+    #endregion
 
-        #region GenerateApplication
-        public Application GenerateApplication(Dictionary<string, int> applicationProperties)
+    #region GenerateApplication
+    public Application GenerateApplication(Dictionary<string, int> applicationProperties)
         {
             Application application = new Application();
             foreach (var item in applicationProperties)
@@ -177,9 +239,9 @@ namespace HCMBackend.Services
                         case "SalaryUnit":
                             application.SalaryUnit = xProData.salaryUnit[random.Next(1, xProData.salaryUnit.Length)];
                             break;
-                        case "ActivityDimension": 
+                        case "ActivityDimension":
                             break;
-                        case "OfferKnownBy": 
+                        case "OfferKnownBy":
                             break;
                     }
             }
@@ -229,6 +291,18 @@ namespace HCMBackend.Services
         }
 
         #endregion
+        private string GenerateRandomDate(int yearsBeforeNow)
+        {
+            DateTime today = DateTime.Now;
+            int maxYear = today.Year - 1;
+            int minYear = today.Year - yearsBeforeNow;
+            int randomYear = random.Next(minYear, maxYear);
+            int randomMonth = random.Next(1, 13);
+            int maxDay = DateTime.DaysInMonth(randomYear, randomMonth);
+            int randomDay = random.Next(1, maxDay + 1);
+            return new DateTime(randomYear, randomMonth, randomDay).ToString(dateFormat);
+        }
+
         private bool ShouldCreate(int chance)
         {
             if (chance < 100)

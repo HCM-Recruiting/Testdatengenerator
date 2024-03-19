@@ -26,11 +26,11 @@ namespace HCMBackend.Services
         {
             configuration = iConfig;
             client = new HttpClient();
-            _clientID = configuration.GetValue<string>("MyAuthData:ClientId");
-            _apiSharedKey = configuration.GetValue<string>("MyAuthData:ApiSharedKey");
-            _baseRequestUrl = configuration.GetValue<string>("MyAuthData:BaseRequestURL");
-            _nonce = configuration.GetValue<string>("MyAuthData:Nonce");
-            _fileName = configuration.GetValue<string>("MyAuthData:FileName");
+            _clientID = configuration.GetValue<string>("MyAuthData:ClientId")!;
+            _apiSharedKey = configuration.GetValue<string>("MyAuthData:ApiSharedKey")!;
+            _baseRequestUrl = configuration.GetValue<string>("MyAuthData:BaseRequestURL")!;
+            _nonce = configuration.GetValue<string>("MyAuthData:Nonce")!;
+            _fileName = configuration.GetValue<string>("MyAuthData:FileName")!;
             _getJobOffersFromCsv = configuration.GetValue<bool>("MyAuthData:ReadJobOffersFromCSV");
         }
 
@@ -89,10 +89,10 @@ namespace HCMBackend.Services
         #endregion
 
 
-        public bool PostApplicationXML(string fileName)
+        public bool PostApplicationXML()
         {
             string requestUrl = _baseRequestUrl + "/application";
-            string xmlContent = File.ReadAllText("applicant.xml");
+            string xmlContent = File.ReadAllText(_fileName);
             string content = xmlContent.ToString();
             string timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
@@ -220,7 +220,6 @@ namespace HCMBackend.Services
             {
                 if (xmlJobOffer != null)
                 {
-                    // Extract identifier and id
                     string identifier = xmlJobOffer.Element("identifier")?.Value;
                     string id = xmlJobOffer.Element("id")?.Value;
                     jobOffers.Add(new JobOffer

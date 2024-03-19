@@ -42,7 +42,6 @@ export class PropertyWindowComponent implements OnInit {
       this.postDictionary[className] = {};
     }
     Object.values(this.classPropDictionary)
-      .skip(1)
       .forEach((value) => {
         this.combinedPropList = [...this.combinedPropList, ...value];
         console.log(this.combinedPropList);
