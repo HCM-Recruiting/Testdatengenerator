@@ -84,6 +84,9 @@ export class PropertyWindowComponent implements OnInit {
   }
 
   saveChanges() {
+    for (const className of this.allClasses) {
+      this.postDictionary[className] = {};
+    }
     if (this.savedClassProperties['AllClasses'] !== undefined) {
       Object.keys(this.classPropDictionary).forEach((key) => {
         const value = this.classPropDictionary[key];
